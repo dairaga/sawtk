@@ -81,18 +81,18 @@ func CreateContext(algorithmName string) Context {
 
 // Signer A convenient wrapper of Context and PrivateKey.
 type Signer struct {
-	context     Context
-	private_key PrivateKey
+	context    Context
+	privateKey PrivateKey
 }
 
 // Sign Signs the given message.
-func (self *Signer) Sign(message []byte) []byte {
-	return self.context.Sign(message, self.private_key)
+func (s *Signer) Sign(message []byte) []byte {
+	return s.context.Sign(message, s.privateKey)
 }
 
-// Returns the public key for this Signer instance.
-func (self *Signer) GetPublicKey() PublicKey {
-	return self.context.GetPublicKey(self.private_key)
+// GetPublicKey returns the public key for this Signer instance.
+func (s *Signer) GetPublicKey() PublicKey {
+	return s.context.GetPublicKey(s.privateKey)
 }
 
 // -- CryptoFactory --
@@ -107,12 +107,12 @@ func NewCryptoFactory(context Context) *CryptoFactory {
 	return &CryptoFactory{context: context}
 }
 
-// Returns the context that backs this Factory instance.
-func (self *CryptoFactory) GetContext() Context {
-	return self.context
+// GetContext returns the context that backs this Factory instance.
+func (factory *CryptoFactory) GetContext() Context {
+	return factory.context
 }
 
-// Creates a new Signer for the given private key.
-func (self *CryptoFactory) NewSigner(private_key PrivateKey) *Signer {
-	return &Signer{self.context, private_key}
+// NewSigner creates a new Signer for the given private key.
+func (factory *CryptoFactory) NewSigner(privateKey PrivateKey) *Signer {
+	return &Signer{factory.context, privateKey}
 }
