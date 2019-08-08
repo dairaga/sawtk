@@ -39,14 +39,13 @@ func Attribute(key, value string) processor.Attribute {
 
 // Context wraps sawtooth processor context.
 type Context struct {
-	ref     *processor.Context
-	cmd     int32
-	request interface{}
-	signer  string
+	ref    *processor.Context
+	cmd    int32
+	signer string
 }
 
 func (ctx *Context) String() string {
-	return fmt.Sprintf(`{cmd: %d, signer: "%s", request: %v}`, ctx.cmd, ctx.signer, ctx.request)
+	return fmt.Sprintf(`{cmd: %d, signer: "%s"}`, ctx.Cmd(), ctx.signer)
 }
 
 // Cmd returns current transaction command.
@@ -54,15 +53,17 @@ func (ctx *Context) Cmd() int32 {
 	return ctx.cmd
 }
 
-// Request returns request data in transaction.
-func (ctx *Context) Request() interface{} {
-	return ctx.request
+// Signer returns transaction signer public key.
+func (ctx *Context) Signer() string {
+	return ctx.signer
 }
 
 // Context returns internal *process.Context.
 func (ctx *Context) Context() *processor.Context {
 	return ctx.ref
 }
+
+// ----------------------------------------------------------------------------
 
 // GetAll returns states with multiple addresses.
 func (ctx *Context) GetAll(data map[string]proto.Message) *processor.InvalidTransactionError {
@@ -104,6 +105,8 @@ func (ctx *Context) Get(address string, data proto.Message) (bool, *processor.In
 	return ok, nil
 }
 
+// ----------------------------------------------------------------------------
+
 // SetAll sets all data into chain.
 func (ctx *Context) SetAll(data map[string]proto.Message) *processor.InvalidTransactionError {
 	tmp := make(map[string][]byte)
@@ -134,10 +137,14 @@ func (ctx *Context) Set(address string, data proto.Message) *processor.InvalidTr
 	return ctx.SetAll(tmp)
 }
 
+// ----------------------------------------------------------------------------
+
 // Del remove state from chain.
 func (ctx *Context) Del(addrs []string) ([]string, error) {
 	return ctx.ref.DeleteState(addrs)
 }
+
+// ----------------------------------------------------------------------------
 
 // AddEvent adds event to chain.
 func (ctx *Context) AddEvent(typ string, data []byte, attributes ...processor.Attribute) *processor.InvalidTransactionError {
@@ -163,6 +170,8 @@ func (ctx *Context) AddEventMessage(typ string, data proto.Message, attributes .
 	return ctx.AddEvent(typ, dataBytes, attributes...)
 }
 
+// ----------------------------------------------------------------------------
+
 // AddReceiptData adds receipt data.
 func (ctx *Context) AddReceiptData(data proto.Message) *processor.InvalidTransactionError {
 
@@ -175,6 +184,8 @@ func (ctx *Context) AddReceiptData(data proto.Message) *processor.InvalidTransac
 	}
 	return nil
 }
+
+// ----------------------------------------------------------------------------
 
 // Setting returns value in setting-tp.
 func (ctx *Context) Setting(address string) (string, *processor.InvalidTransactionError) {
