@@ -4,3 +4,4 @@
 *.log
 go.sum
 tmp
+*.pb.go
