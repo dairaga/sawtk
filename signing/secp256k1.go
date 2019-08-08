@@ -163,6 +163,11 @@ func doSHA512(input []byte) []byte {
 	return hash.Sum(nil)
 }
 
+// SHA512 returns a sha512 hex string.
+func SHA512(input []byte) string {
+	return hex.EncodeToString(doSHA512(input))
+}
+
 func doSHA256(input []byte) []byte {
 	hash := sha256.New()
 	hash.Write(input)
