@@ -274,7 +274,6 @@ func (cli *Client) State(address, head string) (*EntryResp, error) {
 	url := fmt.Sprintf("%s/state/%s%s", cli.endpoint, address, q)
 
 	resp := cli.get(url)
-
 	ret := new(EntryResp)
 
 	if err := resp.handle(http.StatusOK, ret); err != nil {

@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/hyperledger/sawtooth-sdk-go/protobuf/batch_pb2"
+	"github.com/hyperledger/sawtooth-sdk-go/protobuf/transaction_pb2"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -41,6 +43,39 @@ func New(family, version string, pb proto.Message, in, out []string) (*Data, err
 		inputs:  in,
 		outputs: out,
 	}, nil
+}
+
+// ----------------------------------------------------------------------------
+
+// ToTx returns a transaction.
+func (d *Data) ToTx(txb *TransactionBuilder, dependencies ...string) (*transaction_pb2.Transaction, error) {
+	return txb.Build(d, dependencies...)
+}
+
+// ToBatch returns a batch including one transaction.
+// bb is a batch builder.
+// txb is a transaction builder.
+// dependencies are transactions that the transaction depends on.
+func (d *Data) ToBatch(bb *BatchBuilder, txb *TransactionBuilder, dependencies ...string) (*batch_pb2.Batch, error) {
+	tx, err := d.ToTx(txb, dependencies...)
+	if err != nil {
+		return nil, err
+	}
+
+	return bb.Build(tx)
+}
+
+// ToBatches returns a batch list including one batch with one transaction.
+// bb is a batch builder.
+// txb is a transaction builder.
+// dependencies are transactions that the transaction depends on.
+func (d *Data) ToBatches(bb *BatchBuilder, txb *TransactionBuilder, dependencies ...string) (*batch_pb2.BatchList, error) {
+	tx, err := d.ToTx(txb, dependencies...)
+	if err != nil {
+		return nil, err
+	}
+
+	return bb.BuildList(tx)
 }
 
 // ----------------------------------------------------------------------------

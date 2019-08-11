@@ -70,6 +70,7 @@ func (c ErrCode) String() string {
 	return fmt.Sprintf("{err_code: %d}", uint32(c))
 }
 
+/*
 // Errors of SawTK.
 const (
 	Internal      ErrCode = 999987 // internal error.
@@ -86,3 +87,4 @@ const (
 	Marshal       ErrCode = 999998 // data (protobuf) marshal failure.
 	UnknownCmd    ErrCode = 999999 // unknown command.
 )
+*/

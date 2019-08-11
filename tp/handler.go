@@ -5,7 +5,6 @@ import (
 	"reflect"
 
 	"github.com/dairaga/log"
-	"github.com/dairaga/sawtk/errors"
 	"github.com/golang/protobuf/proto"
 
 	"github.com/hyperledger/sawtooth-sdk-go/processor"
@@ -17,7 +16,7 @@ import (
 // unmarshal bytes to protobuf message.
 func unmarshal(buf []byte, pb proto.Message) *processor.InvalidTransactionError {
 	if err := proto.Unmarshal(buf, pb); err != nil {
-		return errors.Unmarshal.TxErrore(err)
+		return Unmarshal.TxErrore(err)
 	}
 
 	return nil
@@ -75,7 +74,7 @@ func MakeHandlerFunc(f interface{}) HandlerFunc {
 		if ftype.NumIn() == 2 {
 			req := args[1].Interface().(*TPRequest)
 			if req.Payload == nil {
-				return []reflect.Value{reflect.ValueOf(errors.BadParameters.TxErrorf("payload is nil"))}
+				return []reflect.Value{reflect.ValueOf(BadParameters.TxErrorf("payload is nil"))}
 			}
 
 			newReq := reflect.New(ftype.In(1).Elem())
@@ -117,7 +116,7 @@ func (h *Handler) Apply(req *processor_pb2.TpProcessRequest, ctx *processor.Cont
 	}(r)
 
 	if err := proto.Unmarshal(req.Payload, r); err != nil {
-		return errors.Unmarshal.TxErrore(err)
+		return Unmarshal.TxErrore(err)
 	}
 
 	hfunc, ok := h.router[r.Cmd]

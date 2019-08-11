@@ -33,7 +33,7 @@ var (
 type Namespace interface {
 	fmt.Stringer
 	MakeAddress(string) string
-	//Validate(string) bool
+	Validate(string) bool
 }
 
 // GeneralNS prefix 64 character with sha512
@@ -46,12 +46,11 @@ func (ns *GeneralNS) MakeAddress(addr string) string {
 	return ns.prefix + _sha512([]byte(addr))[:64]
 }
 
-/*
 // Validate ...
 func (ns *GeneralNS) Validate(addr string) bool {
 	return IsAddress(addr) && strings.HasPrefix(addr, ns.prefix)
 }
-*/
+
 func (ns *GeneralNS) String() string {
 	return ns.prefix
 }
@@ -106,13 +105,26 @@ func EmptyHash() string {
 	return emptyHash
 }
 
-/*
 // IsAddress returns address length is 70 or not.
 func IsAddress(addr string) bool {
 	if len(addr) != 70 {
 		return false
 	}
 
-	return sawtk.IsHexString(addr)
+	return isHexString(addr)
 }
-*/
+
+// IsHexString return s is a hex string or not.
+func isHexString(s string) bool {
+	if len(s)%2 != 0 {
+		return false
+	}
+
+	for _, x := range s {
+		if !(('a' <= x && x <= 'f') || ('0' <= x && x <= '9')) {
+			return false
+		}
+	}
+
+	return true
+}

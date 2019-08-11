@@ -28,8 +28,8 @@ func NewSigner(key PrivateKey) *Signer {
 	return factory.NewSigner(key)
 }
 
-// GenereateSigner returns a signer with a random private key.
-func GenereateSigner() *Signer {
+// GenerateSigner returns a signer with a random private key.
+func GenerateSigner() *Signer {
 	return NewSigner(secp256k1Ctx.NewRandomPrivateKey())
 }
 
@@ -56,6 +56,15 @@ func LoadSignerFromFile(file string) (*Signer, error) {
 	}
 
 	return LoadSignerFromBytes(raw), nil
+}
+
+// MustSigner ...
+func MustSigner(s *Signer, err error) *Signer {
+	if err != nil || s == nil {
+		panic("signer failure")
+	}
+
+	return s
 }
 
 // ----------------------------------------------------------------------------

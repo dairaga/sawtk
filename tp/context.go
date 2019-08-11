@@ -3,7 +3,6 @@ package tp
 import (
 	"fmt"
 
-	"github.com/dairaga/sawtk/errors"
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/sawtooth-sdk-go/processor"
 	"github.com/hyperledger/sawtooth-sdk-go/protobuf/setting_pb2"
@@ -53,8 +52,8 @@ func (ctx *Context) Cmd() int32 {
 	return ctx.cmd
 }
 
-// Signer returns transaction signer public key.
-func (ctx *Context) Signer() string {
+// SignerPublicKey returns transaction signer public key.
+func (ctx *Context) SignerPublicKey() string {
 	return ctx.signer
 }
 
@@ -71,7 +70,7 @@ func (ctx *Context) GetAll(data map[string]proto.Message) *processor.InvalidTran
 
 	result, err := ctx.ref.GetState(keys)
 	if err != nil {
-		return errors.GetState.TxErrore(err)
+		return GetState.TxErrore(err)
 	}
 
 	for k, v := range data {
@@ -84,7 +83,7 @@ func (ctx *Context) GetAll(data map[string]proto.Message) *processor.InvalidTran
 		if v != nil {
 			// value in input data and umarshal result bytes from chain.
 			if err := proto.Unmarshal(b, v); err != nil {
-				return errors.Unmarshal.TxErrore(err)
+				return Unmarshal.TxErrore(err)
 			}
 		}
 	}
@@ -114,18 +113,18 @@ func (ctx *Context) SetAll(data map[string]proto.Message) *processor.InvalidTran
 	for k, v := range data {
 		dataBytes, err := proto.Marshal(v)
 		if err != nil {
-			return errors.Marshal.TxErrore(err)
+			return Marshal.TxErrore(err)
 		}
 		tmp[k] = dataBytes
 	}
 
 	resp, err := ctx.ref.SetState(tmp)
 	if err != nil {
-		return errors.SetState.TxErrore(err)
+		return SetState.TxErrore(err)
 	}
 
 	if len(resp) != len(data) {
-		return errors.LenNotMatch.TxErrorf("length of responses (%d) are not same with input (%d)", len(resp), len(data))
+		return LenNotMatch.TxErrorf("length of responses (%d) are not same with input (%d)", len(resp), len(data))
 	}
 
 	return nil
@@ -150,7 +149,7 @@ func (ctx *Context) Del(addrs []string) ([]string, error) {
 func (ctx *Context) AddEvent(typ string, data []byte, attributes ...processor.Attribute) *processor.InvalidTransactionError {
 
 	if err := ctx.ref.AddEvent(typ, attributes, data); err != nil {
-		return errors.Events.TxErrore(err)
+		return Events.TxErrore(err)
 	}
 
 	return nil
@@ -164,7 +163,7 @@ func (ctx *Context) AddEventMessage(typ string, data proto.Message, attributes .
 	if data != nil {
 		dataBytes, err = proto.Marshal(data)
 		if err != nil {
-			return errors.Marshal.TxErrore(err)
+			return Marshal.TxErrore(err)
 		}
 	}
 	return ctx.AddEvent(typ, dataBytes, attributes...)
@@ -177,10 +176,10 @@ func (ctx *Context) AddReceiptData(data proto.Message) *processor.InvalidTransac
 
 	databyes, err := proto.Marshal(data)
 	if err != nil {
-		return errors.Marshal.TxErrore(err)
+		return Marshal.TxErrore(err)
 	}
 	if err := ctx.ref.AddReceiptData(databyes); err != nil {
-		return errors.ReceiptData.TxErrore(err)
+		return ReceiptData.TxErrore(err)
 	}
 	return nil
 }
@@ -193,7 +192,7 @@ func (ctx *Context) Setting(address string) (string, *processor.InvalidTransacti
 	if ok, err := ctx.Get(address, setting); err != nil {
 		return "", err
 	} else if !ok {
-		return "", errors.NotFound.TxErrorf("settings not found: %s", address)
+		return "", NotFound.TxErrorf("settings not found: %s", address)
 	}
 
 	return setting.Entries[0].Value, nil

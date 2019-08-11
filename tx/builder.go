@@ -79,8 +79,8 @@ type TransactionBuilder struct {
 	signer               *signing.Signer
 }
 
-// NewTxBuilder returns a TransactionBuilder.
-func NewTxBuilder(batchSignerPublicKey string, signer *signing.Signer) *TransactionBuilder {
+// NewBuilder returns a TransactionBuilder.
+func NewBuilder(batchSignerPublicKey string, signer *signing.Signer) *TransactionBuilder {
 	return &TransactionBuilder{batchSignerPublicKey: batchSignerPublicKey, signer: signer}
 }
 
