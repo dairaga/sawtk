@@ -382,7 +382,6 @@ func (cli *Client) SubmitBatchesResult(batches *batch_pb2.BatchList) (*BatchStat
 
 // Data return data in chain state
 func (cli *Client) Data(addr string, data proto.Message) error {
-
 	return cli.StatePB(addr, data)
 }
 

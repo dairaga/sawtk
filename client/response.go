@@ -19,9 +19,9 @@ func (resp *response) String() string {
 }
 
 func (resp *response) fill(httpresp *http.Response) {
-	resp.code = httpresp.StatusCode
 	resp.result, resp.lastErr = ioutil.ReadAll(httpresp.Body)
 	if resp.lastErr == nil {
+		resp.code = httpresp.StatusCode
 		httpresp.Body.Close()
 	}
 }

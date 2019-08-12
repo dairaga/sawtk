@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dairaga/sawtk/signing"
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/sawtooth-sdk-go/protobuf/batch_pb2"
 	"github.com/hyperledger/sawtooth-sdk-go/protobuf/transaction_pb2"
@@ -47,8 +48,28 @@ func New(family, version string, pb proto.Message, in, out []string) (*Data, err
 
 // ----------------------------------------------------------------------------
 
+// Payload returns payload in data.
+func (d *Data) Payload() []byte {
+	return d.payload
+}
+
+// TxHeader return a transaction header.
+func (d *Data) TxHeader(txkey, batchkey string, dependencies ...string) *transaction_pb2.TransactionHeader {
+	return &transaction_pb2.TransactionHeader{
+		SignerPublicKey:  txkey,
+		FamilyName:       d.family,
+		FamilyVersion:    d.version,
+		Inputs:           d.inputs,
+		Outputs:          d.outputs,
+		Dependencies:     dependencies,
+		BatcherPublicKey: batchkey,
+		Nonce:            Nonce(),
+		PayloadSha512:    signing.SHA512(d.payload),
+	}
+}
+
 // ToTx returns a transaction.
-func (d *Data) ToTx(txb *TransactionBuilder, dependencies ...string) (*transaction_pb2.Transaction, error) {
+func (d *Data) ToTx(txb *Builder, dependencies ...string) (*transaction_pb2.Transaction, error) {
 	return txb.Build(d, dependencies...)
 }
 
@@ -56,7 +77,7 @@ func (d *Data) ToTx(txb *TransactionBuilder, dependencies ...string) (*transacti
 // bb is a batch builder.
 // txb is a transaction builder.
 // dependencies are transactions that the transaction depends on.
-func (d *Data) ToBatch(bb *BatchBuilder, txb *TransactionBuilder, dependencies ...string) (*batch_pb2.Batch, error) {
+func (d *Data) ToBatch(bb *BatchBuilder, txb *Builder, dependencies ...string) (*batch_pb2.Batch, error) {
 	tx, err := d.ToTx(txb, dependencies...)
 	if err != nil {
 		return nil, err
@@ -69,7 +90,7 @@ func (d *Data) ToBatch(bb *BatchBuilder, txb *TransactionBuilder, dependencies .
 // bb is a batch builder.
 // txb is a transaction builder.
 // dependencies are transactions that the transaction depends on.
-func (d *Data) ToBatches(bb *BatchBuilder, txb *TransactionBuilder, dependencies ...string) (*batch_pb2.BatchList, error) {
+func (d *Data) ToBatches(bb *BatchBuilder, txb *Builder, dependencies ...string) (*batch_pb2.BatchList, error) {
 	tx, err := d.ToTx(txb, dependencies...)
 	if err != nil {
 		return nil, err

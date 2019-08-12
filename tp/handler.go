@@ -108,7 +108,6 @@ type Handler struct {
 // Decode payload in req (*processor_pb2.TpProcessRequest), and change to user's payload.
 func (h *Handler) Apply(req *processor_pb2.TpProcessRequest, ctx *processor.Context) error {
 	r := new(TPRequest)
-
 	defer func(r *TPRequest) {
 		if r := recover(); r != nil {
 			log.Fatal(r)
@@ -136,7 +135,6 @@ func (h *Handler) Apply(req *processor_pb2.TpProcessRequest, ctx *processor.Cont
 		log.Debugf("cmd %d handler: %v", r.Cmd, err)
 		return err
 	}
-
 	return nil
 }
 

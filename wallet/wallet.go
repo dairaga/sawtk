@@ -26,3 +26,13 @@ func MakeFromHex(hexstr string) (string, error) {
 
 	return Make(raw), nil
 }
+
+// Must retuns a wallet address or panic.
+func Must(hexstr string) string {
+	ret, err := MakeFromHex(hexstr)
+	if err != nil {
+		panic(err)
+	}
+
+	return ret
+}

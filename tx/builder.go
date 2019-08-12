@@ -73,23 +73,23 @@ func BatchList(bs ...*batch_pb2.Batch) *batch_pb2.BatchList {
 
 // ----------------------------------------------------------------------------
 
-// TransactionBuilder is to build sawtooth transaction.
-type TransactionBuilder struct {
+// Builder is to build sawtooth transaction.
+type Builder struct {
 	batchSignerPublicKey string
 	signer               *signing.Signer
 }
 
 // NewBuilder returns a TransactionBuilder.
-func NewBuilder(batchSignerPublicKey string, signer *signing.Signer) *TransactionBuilder {
-	return &TransactionBuilder{batchSignerPublicKey: batchSignerPublicKey, signer: signer}
+func NewBuilder(batchSignerPublicKey string, signer *signing.Signer) *Builder {
+	return &Builder{batchSignerPublicKey: batchSignerPublicKey, signer: signer}
 }
 
-func (b *TransactionBuilder) String() string {
+func (b *Builder) String() string {
 	return fmt.Sprintf("batch signer: %s, signer: %s", b.batchSignerPublicKey, b.signer.GetPublicKey().AsHex())
 }
 
 // BuildHeader returns a sawtooth transaction header.
-func (b *TransactionBuilder) BuildHeader(data *Data, dependencies ...string) *transaction_pb2.TransactionHeader {
+func (b *Builder) BuildHeader(data *Data, dependencies ...string) *transaction_pb2.TransactionHeader {
 	return &transaction_pb2.TransactionHeader{
 		SignerPublicKey:  b.signer.GetPublicKey().AsHex(),
 		FamilyName:       data.family,
@@ -104,7 +104,7 @@ func (b *TransactionBuilder) BuildHeader(data *Data, dependencies ...string) *tr
 }
 
 // Build returns a sawtooth transaction.
-func (b *TransactionBuilder) Build(data *Data, dependencies ...string) (*transaction_pb2.Transaction, error) {
+func (b *Builder) Build(data *Data, dependencies ...string) (*transaction_pb2.Transaction, error) {
 	header := b.BuildHeader(data, dependencies...)
 	headerBytes, err := proto.Marshal(header)
 	if err != nil {
@@ -121,7 +121,7 @@ func (b *TransactionBuilder) Build(data *Data, dependencies ...string) (*transac
 }
 
 // BuildBatch returns a sawtooth batch.
-func (b *TransactionBuilder) BuildBatch(batchBuilder *BatchBuilder, data ...*Data) (*batch_pb2.Batch, error) {
+func (b *Builder) BuildBatch(batchBuilder *BatchBuilder, data ...*Data) (*batch_pb2.Batch, error) {
 	size := len(data)
 	var err error
 	txs := make([]*transaction_pb2.Transaction, size, size)
