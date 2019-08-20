@@ -8,7 +8,6 @@ import (
 	"math/big"
 
 	"github.com/btcsuite/btcd/btcec"
-	"gitlab.com/dataforceme/sawtk/signing"
 )
 
 var (
@@ -163,7 +162,7 @@ func generateKeyByCode(c elliptic.Curve, code string) *ecdsa.PrivateKey {
 // GeneratePrivKeyFromCode returns a private key from some code.
 func GeneratePrivKeyFromCode(code string) PrivateKey {
 	p := (*btcec.PrivateKey)(generateKeyByCode(curv, code))
-	return signing.NewSecp256k1PrivateKey(p.Serialize())
+	return NewSecp256k1PrivateKey(p.Serialize())
 }
 
 // GenerateSignerFromCode returns a signer from some code.
