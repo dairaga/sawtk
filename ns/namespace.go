@@ -8,16 +8,16 @@ import (
 	"strings"
 )
 
-// _sha512 returns a SHA-512 hex string.
-func _sha512(data []byte) string {
+// SHA512 returns a SHA-512 hex string.
+func SHA512(data []byte) string {
 	hash := sha512.New()
 	hash.Write(data)
 	bytes := hash.Sum(nil)
 	return hex.EncodeToString(bytes)
 }
 
-// Sha256 returns a SHA-256 hex string.
-func _sha256(data []byte) string {
+// SHA256 returns a SHA-256 hex string.
+func SHA256(data []byte) string {
 	hash := sha256.New()
 	hash.Write(data)
 	bytes := hash.Sum(nil)
@@ -25,7 +25,7 @@ func _sha256(data []byte) string {
 }
 
 var (
-	emptyHash = _sha256([]byte(""))[:16]
+	emptyHash = SHA256([]byte(""))[:16]
 	//addrRegx  = regexp.MustCompile(`[0-9a-f]{70}`)
 )
 
@@ -43,7 +43,7 @@ type GeneralNS struct {
 
 // MakeAddress ...
 func (ns *GeneralNS) MakeAddress(addr string) string {
-	return ns.prefix + _sha512([]byte(addr))[:64]
+	return ns.prefix + SHA512([]byte(addr))[:64]
 }
 
 // Validate ...
@@ -66,7 +66,7 @@ func (sns *SawtoothNS) MakeAddress(addr string) string {
 	b := strings.Builder{}
 
 	for _, x := range tmp {
-		b.WriteString(_sha256([]byte(x))[:16])
+		b.WriteString(SHA256([]byte(x))[:16])
 	}
 
 	if len(tmp) < 4 {
@@ -86,13 +86,13 @@ func New(name string) Namespace {
 	case "000000":
 		return settings
 	default:
-		return &GeneralNS{prefix: _sha512([]byte(name))[:6]}
+		return &GeneralNS{prefix: SHA512([]byte(name))[:6]}
 	}
 }
 
 // NewSawtoothNS ...
 func NewSawtoothNS(name string) Namespace {
-	return &SawtoothNS{GeneralNS{prefix: _sha512([]byte(name))[:6]}}
+	return &SawtoothNS{GeneralNS{prefix: SHA512([]byte(name))[:6]}}
 }
 
 // Settings return settings-tp namespace
