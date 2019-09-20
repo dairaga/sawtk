@@ -2,6 +2,7 @@ package tp
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 
 	"github.com/dairaga/log"
@@ -102,17 +103,23 @@ func MakeHandlerFunc(f interface{}) HandlerFunc {
 type Handler struct {
 	*Family
 	router map[int32]HandlerFunc
+	debug  bool
 }
 
 // Apply implements Apply function of processor.TransactionHandler.
 // Decode payload in req (*processor_pb2.TpProcessRequest), and change to user's payload.
 func (h *Handler) Apply(req *processor_pb2.TpProcessRequest, ctx *processor.Context) error {
 	r := new(TPRequest)
-	defer func(r *TPRequest) {
-		if r := recover(); r != nil {
-			log.Fatal(r)
-		}
-	}(r)
+
+	// 加一個環境變數，來設定是否要進入 debug mode,
+	// 如果是 debug mode 則取消 recover.
+	if !h.debug {
+		defer func(r *TPRequest) {
+			if r := recover(); r != nil {
+				log.Fatal(r)
+			}
+		}(r)
+	}
 
 	if err := proto.Unmarshal(req.Payload, r); err != nil {
 		return Unmarshal.TxErrore(err)
@@ -148,5 +155,6 @@ func NewHandler(family *Family) *Handler {
 	return &Handler{
 		family,
 		make(map[int32]HandlerFunc),
+		os.Getenv("TP_DEBUG") == "true",
 	}
 }
