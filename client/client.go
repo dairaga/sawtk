@@ -60,8 +60,9 @@ func queryString(pairs map[string]string) string {
 
 // Client sawtooth restful api client
 type Client struct {
-	endpoint string
-	ref      *http.Client
+	endpoint   string
+	ref        *http.Client
+	currentURL string
 }
 
 // New a sawtooth restful api client
@@ -72,10 +73,11 @@ func New(endpoint string, timeout time.Duration) *Client {
 // ----------------------------------------------------------------------------
 
 func (cli *Client) String() string {
-	return fmt.Sprintf(`{"endpoint": "%s", "timeout": "%v"}`, cli.endpoint, cli.ref.Timeout)
+	return fmt.Sprintf(`{"endpoint": "%s", "timeout": "%v", "url": %q}`, cli.endpoint, cli.ref.Timeout, cli.currentURL)
 }
 
 func (cli *Client) do(method, url, contentType string, data []byte) (ret *response) {
+	cli.currentURL = url
 	ret = &response{}
 
 	var reader io.Reader

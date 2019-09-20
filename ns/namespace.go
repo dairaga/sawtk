@@ -24,17 +24,24 @@ func SHA256(data []byte) string {
 	return hex.EncodeToString(bytes)
 }
 
+// ----------------------------------------------------------------------------
+
 var (
 	emptyHash = SHA256([]byte(""))[:16]
 	//addrRegx  = regexp.MustCompile(`[0-9a-f]{70}`)
 )
+
+// ----------------------------------------------------------------------------
 
 // Namespace sawtooth namespace
 type Namespace interface {
 	fmt.Stringer
 	MakeAddress(string) string
 	Validate(string) bool
+	Prefix() string
 }
+
+// ----------------------------------------------------------------------------
 
 // GeneralNS prefix 64 character with sha512
 type GeneralNS struct {
@@ -54,6 +61,13 @@ func (ns *GeneralNS) Validate(addr string) bool {
 func (ns *GeneralNS) String() string {
 	return ns.prefix
 }
+
+// Prefix returns the namespace prefix.
+func (ns *GeneralNS) Prefix() string {
+	return ns.prefix
+}
+
+// ----------------------------------------------------------------------------
 
 // SawtoothNS is implements namespace rules of sawtooth.
 type SawtoothNS struct {
@@ -79,6 +93,8 @@ func (sns *SawtoothNS) MakeAddress(addr string) string {
 var (
 	settings = &SawtoothNS{GeneralNS{"000000"}} // build-in settings family of sawtooth.
 )
+
+// ----------------------------------------------------------------------------
 
 // New return sawtooth namespace
 func New(name string) Namespace {
