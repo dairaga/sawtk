@@ -2,9 +2,6 @@ package subscriber
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"os"
 	"os/signal"
 	"time"
@@ -21,10 +18,10 @@ import (
 )
 
 // EvtTypBlockID sawtooth block id event
-const EvtTypBlockID = "sawtooth/block-commit"
+//const EvtTypBlockID = "sawtooth/block-commit"
 
 // BlockIDFile save block id
-const BlockIDFile = ".sub_block_id"
+// const BlockIDFile = ".sub_block_id"
 
 // Handler is a sawtooth subscriber handler.
 // Return true if need to pass next handler, or return false.
@@ -183,6 +180,7 @@ func (s *Subscriber) run() {
 	}()
 }
 
+/*
 // readLastBlockID returns last block id in file if exists.
 func (s *Subscriber) readLastBlockID() (string, error) {
 	dataBytes, err := ioutil.ReadFile(BlockIDFile)
@@ -204,19 +202,19 @@ func (s *Subscriber) readLastBlockID() (string, error) {
 
 	return "", fmt.Errorf("previous block id not found")
 }
+*/
 
 // sendSubscribe sends subscription after running.
-func (s *Subscriber) sendSubscribe() (string, error) {
-	var lastBlockIDs []string
+func (s *Subscriber) sendSubscribe(lastBlockIDs []string) (string, error) {
 
-	if s.RecordBlockID {
+	/*if s.RecordBlockID {
 		s.Subscribe(EvtTypBlockID, s.handleBlock)
 		if prevID, err := s.readLastBlockID(); err != nil {
 			log.Warnf("read last block id: %v", err)
 		} else {
 			lastBlockIDs = append(lastBlockIDs, prevID)
 		}
-	}
+	}*/
 
 	req := &client_event_pb2.ClientEventsSubscribeRequest{
 		LastKnownBlockIds: lastBlockIDs, // adds last block id
@@ -238,24 +236,34 @@ func (s *Subscriber) sendSubscribe() (string, error) {
 	return corID, nil
 }
 
+/*
 // handleBlock to record block data into file.
 func (s *Subscriber) handleBlock(id string, evt *events_pb2.Event) bool {
 
 	dataBytes, err := json.Marshal(evt.Attributes)
 	if err != nil {
 		log.Errorf("json unmarshal: %v", err)
-		return false
+		return true // force to user's handler
 	}
-	log.Debugf("record block id: %s", string(dataBytes))
+	//log.Debugf("record block id: %s", string(dataBytes))
 
 	if err := ioutil.WriteFile(BlockIDFile, dataBytes, 0644); err != nil {
 		log.Warnf("write block id: %v", err)
 	}
+
+	for i, attr := range evt.Attributes {
+		if attr.Key == "block_id" {
+			log.Debugf("%02d: key: %s, value: %s", i, attr.Key, attr.Value)
+			break
+		}
+	}
+
 	return true
 }
+*/
 
 // WaitForShutdown is to start a subscriber and wait for shutdown.
-func (s *Subscriber) WaitForShutdown() {
+func (s *Subscriber) WaitForShutdown(lastBlockIDs ...string) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Error("run panic: ", r)
@@ -273,7 +281,7 @@ func (s *Subscriber) WaitForShutdown() {
 
 	s.run()
 
-	id, err := s.sendSubscribe()
+	id, err := s.sendSubscribe(lastBlockIDs)
 	if err != nil {
 		log.Error("send subscribe: ", err)
 		return
