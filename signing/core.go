@@ -95,6 +95,11 @@ func (s *Signer) GetPublicKey() PublicKey {
 	return s.context.GetPublicKey(s.privateKey)
 }
 
+// GetPrivateKey ...
+func (s *Signer) GetPrivateKey() PrivateKey {
+	return s.privateKey
+}
+
 // -- CryptoFactory --
 
 // CryptoFactory A factory for generating Signers.
