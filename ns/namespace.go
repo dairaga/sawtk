@@ -45,6 +45,7 @@ type Namespace interface {
 
 // GeneralNS prefix 64 character with sha512
 type GeneralNS struct {
+	name   string
 	prefix string
 }
 
@@ -59,7 +60,7 @@ func (ns *GeneralNS) Validate(addr string) bool {
 }
 
 func (ns *GeneralNS) String() string {
-	return ns.prefix
+	return ns.name
 }
 
 // Prefix returns the namespace prefix.
@@ -91,7 +92,12 @@ func (sns *SawtoothNS) MakeAddress(addr string) string {
 }
 
 var (
-	settings = &SawtoothNS{GeneralNS{"000000"}} // build-in settings family of sawtooth.
+	settings = &SawtoothNS{
+		GeneralNS{
+			name:   "settings",
+			prefix: "000000",
+		},
+	} // build-in settings family of sawtooth.
 )
 
 // ----------------------------------------------------------------------------
@@ -102,13 +108,21 @@ func New(name string) Namespace {
 	case "000000":
 		return settings
 	default:
-		return &GeneralNS{prefix: SHA512([]byte(name))[:6]}
+		return &GeneralNS{
+			name:   name,
+			prefix: SHA512([]byte(name))[:6],
+		}
 	}
 }
 
 // NewSawtoothNS ...
 func NewSawtoothNS(name string) Namespace {
-	return &SawtoothNS{GeneralNS{prefix: SHA512([]byte(name))[:6]}}
+	return &SawtoothNS{
+		GeneralNS{
+			name:   name,
+			prefix: SHA512([]byte(name))[:6],
+		},
+	}
 }
 
 // Settings return settings-tp namespace
