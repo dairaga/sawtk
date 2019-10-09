@@ -125,6 +125,7 @@ func (h *Handler) Apply(req *processor_pb2.TpProcessRequest, ctx *processor.Cont
 		return Unmarshal.TxErrore(err)
 	}
 
+	log.Debugf("got CMD (%d)", r.Cmd)
 	hfunc, ok := h.router[r.Cmd]
 	if !ok || hfunc == nil {
 		return &processor.InvalidTransactionError{
