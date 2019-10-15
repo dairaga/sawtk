@@ -44,3 +44,13 @@ func Back3(x int64) float64 {
 func Back6(x int64) float64 {
 	return float64(x) / 1000000.0
 }
+
+// ShiftAndHalfEven6 ...
+func ShiftAndHalfEven6(x float64) int64 {
+	return HalfEvent(Shift6(x))
+}
+
+// ShiftAndHalfEven3 ...
+func ShiftAndHalfEven3(x float64) int64 {
+	return HalfEvent(Shift3(x))
+}
