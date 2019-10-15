@@ -34,3 +34,13 @@ func Shift3(x float64) float64 {
 func Shift6(x float64) float64 {
 	return x * 1000000.0
 }
+
+// Back3 ...
+func Back3(x int64) float64 {
+	return float64(x) / 1000.0
+}
+
+// Back6 ...
+func Back6(x int64) float64 {
+	return float64(x) / 1000000.0
+}
