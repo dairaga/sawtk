@@ -96,7 +96,8 @@ func (s *Subscriber) routing(id string, msg *validator_pb2.Message) {
 		evts := new(events_pb2.EventList)
 
 		if err := proto.Unmarshal(msg.Content, evts); err == nil {
-			for _, evt := range evts.Events {
+			for k, evt := range evts.Events {
+				log.Debugf("got event: %02d: %s", k, evt.EventType)
 
 				handlers, ok := s.handlers[evt.EventType]
 

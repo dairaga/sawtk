@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/dairaga/log"
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/sawtooth-sdk-go/processor"
 )
@@ -52,6 +53,8 @@ func (c ErrCode) ToBytes() []byte {
 
 // TxErrorf returns a InvalidTransactionError.
 func (c ErrCode) TxErrorf(format string, a ...interface{}) *processor.InvalidTransactionError {
+	log.Errorf(format, a...)
+
 	return &processor.InvalidTransactionError{
 		Msg:          fmt.Sprintf(format, a...),
 		ExtendedData: c.ToBytes(),

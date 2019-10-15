@@ -1,14 +1,14 @@
 package util
 
-import uuid "github.com/satori/go.uuid"
+import uuid "github.com/google/uuid"
 
 // NewUUID returns a random uuid string (uuid v4).
 func NewUUID() string {
-	return uuid.NewV4().String()
+	return uuid.New().String()
 }
 
 // IsUUID returns id is an UUID string or not.
 func IsUUID(id string) bool {
-	_, err := uuid.FromString(id)
+	_, err := uuid.Parse(id)
 	return err == nil
 }

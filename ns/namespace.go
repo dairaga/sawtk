@@ -1,13 +1,13 @@
 package ns
 
 import (
-	"crypto/sha256"
-	"crypto/sha512"
-	"encoding/hex"
 	"fmt"
 	"strings"
+
+	"github.com/dairaga/sawtk/util"
 )
 
+/*
 // SHA512 returns a SHA-512 hex string.
 func SHA512(data []byte) string {
 	hash := sha512.New()
@@ -23,11 +23,12 @@ func SHA256(data []byte) string {
 	bytes := hash.Sum(nil)
 	return hex.EncodeToString(bytes)
 }
+*/
 
 // ----------------------------------------------------------------------------
 
 var (
-	emptyHash = SHA256([]byte(""))[:16]
+	emptyHash = util.SHA256([]byte(""))[:16]
 	//addrRegx  = regexp.MustCompile(`[0-9a-f]{70}`)
 )
 
@@ -51,7 +52,7 @@ type GeneralNS struct {
 
 // MakeAddress ...
 func (ns *GeneralNS) MakeAddress(addr string) string {
-	return ns.prefix + SHA512([]byte(addr))[:64]
+	return ns.prefix + util.SHA512([]byte(addr))[:64]
 }
 
 // Validate ...
@@ -81,7 +82,7 @@ func (sns *SawtoothNS) MakeAddress(addr string) string {
 	b := strings.Builder{}
 
 	for _, x := range tmp {
-		b.WriteString(SHA256([]byte(x))[:16])
+		b.WriteString(util.SHA256([]byte(x))[:16])
 	}
 
 	if len(tmp) < 4 {
@@ -110,7 +111,7 @@ func New(name string) Namespace {
 	default:
 		return &GeneralNS{
 			name:   name,
-			prefix: SHA512([]byte(name))[:6],
+			prefix: util.SHA512([]byte(name))[:6],
 		}
 	}
 }
@@ -120,7 +121,7 @@ func NewSawtoothNS(name string) Namespace {
 	return &SawtoothNS{
 		GeneralNS{
 			name:   name,
-			prefix: SHA512([]byte(name))[:6],
+			prefix: util.SHA512([]byte(name))[:6],
 		},
 	}
 }

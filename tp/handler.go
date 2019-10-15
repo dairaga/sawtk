@@ -117,6 +117,7 @@ func (h *Handler) Apply(req *processor_pb2.TpProcessRequest, ctx *processor.Cont
 		defer func(r *TPRequest) {
 			if r := recover(); r != nil {
 				log.Fatal(r)
+				fmt.Println(r)
 			}
 		}(r)
 	}
@@ -141,8 +142,10 @@ func (h *Handler) Apply(req *processor_pb2.TpProcessRequest, ctx *processor.Cont
 
 	if err := hfunc(ctxw, r); err != nil {
 		log.Debugf("cmd %d handler: %v", r.Cmd, err)
+		fmt.Println("handle", r.Cmd, err)
 		return err
 	}
+	log.Debugf("CMD (%d) end", r.Cmd)
 	return nil
 }
 
