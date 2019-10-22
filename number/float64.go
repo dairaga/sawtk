@@ -1,5 +1,6 @@
 package number
 
+/*
 // HalfEvent ...
 func HalfEvent(x float64) int64 {
 	if x == 0.0 {
@@ -77,4 +78,39 @@ func ShiftAndHalfEven3(x float64) int64 {
 	}
 
 	return HalfEvent(Shift3(x))
+}
+
+// ShiftAndHalfEven ...
+func ShiftAndHalfEven(x float64) int64 {
+	return ShiftAndHalfEven6(x)
+}
+
+// Shift ...
+func Shift(x float64) float64 {
+	return Shift6(x)
+}
+
+// Back ...
+func Back(x int64) float64 {
+	return Back6(x)
+}
+
+// FromInt64 ...
+func FromInt64(x int64) int64 {
+	return x * 1000000
+}
+
+// FromFloat64 ...
+func FromFloat64(x float64) int64 {
+	return ShiftAndHalfEven(x)
+}
+
+// Float64 ...
+func Float64(x int64) float64 {
+	return Back(x)
+}
+*/
+
+func mytest() {
+
 }

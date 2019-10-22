@@ -1,5 +1,6 @@
 package number_test
 
+/*
 import (
 	"testing"
 
@@ -31,3 +32,4 @@ func TestHalfEvent(t *testing.T) {
 
 	}
 }
+*/
