@@ -1,4 +1,4 @@
-# Dairaga SawtK
+# Dairaga Sawtk
 
 Sawtk is a Go toolkit for Hyperledger Sawtooth.
 
