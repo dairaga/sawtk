@@ -9,7 +9,7 @@ import (
 func TestNamespace(t *testing.T) {
 	ns1 := ns.New("intkey")
 
-	if ns1.String() != "1cf126" {
+	if ns1.Prefix() != "1cf126" {
 		t.Fatal("namespace not match:", ns1.String(), "1cf126")
 	}
 
