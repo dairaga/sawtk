@@ -3,12 +3,18 @@ package wallet
 import (
 	"encoding/hex"
 
+	"github.com/dairaga/sawtk/util"
+
 	"github.com/btcsuite/btcutil/base58"
 )
 
 // Make returns a wallet address.
 func Make(raw []byte) string {
-	return base58.CheckEncode(raw, raw[0])
+	return base58.CheckEncode(
+		util.RIPEMD160Raw(util.SHA256Raw(raw)), byte(0),
+	)
+
+	//return base58.CheckEncode(raw, byte(0))
 }
 
 // Validate returns input wallet is ok or not.
