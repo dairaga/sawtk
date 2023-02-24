@@ -11,7 +11,7 @@ require (
 	github.com/hyperledger/sawtooth-sdk-go v0.1.2
 	github.com/pebbe/zmq4 v1.0.0
 	github.com/satori/go.uuid v1.2.0
-	golang.org/x/crypto v0.0.0-20170930174604-9419663f5a44
+	golang.org/x/crypto v0.1.0
 )
 
 replace github.com/hyperledger/sawtooth-sdk-go => ../../hyperledger/sawtooth-sdk-go
